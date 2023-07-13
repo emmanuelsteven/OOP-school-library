@@ -40,6 +40,7 @@
 - **[Person class]**
 - **[Student class]**
 - **[Teacher class]**
+- **[Use decorator design pattern to correct the names of people]**
 
 <!-- GETTING STARTED -->
 
@@ -92,7 +93,6 @@ To run the project, execute the following command:
 ## 🔭 Future Features <a name="future-features"></a>
 
 - [ ]
-- Add class decorate
 - Set up associations
 - Add basic UI
 
