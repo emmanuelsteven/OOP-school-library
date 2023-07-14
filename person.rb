@@ -1,7 +1,6 @@
 require_relative 'nameable'
 
 class Person < Nameable
-
   attr_accessor :name, :age, :rentals, :parent_permission
   attr_reader :id
 
@@ -22,9 +21,8 @@ class Person < Nameable
     @name
   end
 
-  def add_rental(date, book)
-    rental = Rental.new(date, book, self)
-    @rentals << rental
+  def add_rental(book, date)
+    Rental.new(date, self, book)
   end
 
   private
