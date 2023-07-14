@@ -41,6 +41,7 @@
 - **[Student class]**
 - **[Teacher class]**
 - **[Use decorator design pattern to correct the names of people]**
+- **[Set up associations]**
 
 <!-- GETTING STARTED -->
 
@@ -93,7 +94,6 @@ To run the project, execute the following command:
 ## 🔭 Future Features <a name="future-features"></a>
 
 - [ ]
-- Set up associations
 - Add basic UI
 
 <!-- CONTRIBUTING -->
