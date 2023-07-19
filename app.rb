@@ -1,29 +1,24 @@
-require_relative 'person'
 require_relative 'student'
 require_relative 'teacher'
 require_relative 'book'
 require_relative 'rentals'
-require_relative 'classroom'
+require_relative 'manage_people'
 
 class App
+  attr_accessor :books, :people, :rental
+
   def initialize
-    @persons = []
     @books = []
+    @people = []
     @rentals = []
   end
 
-  def list_all_books
-    puts 'All Books:'
-    @books.each do |book|
-      puts "Title: #{book.title}, Author: #{book.author} \n \n"
-    end
+  def list_books
+    @books.each { |book| puts "Title: #{book.title},  Author: #{book.author}" }
   end
 
-  def list_all_people
-    puts 'No person available in the DataBase.' if @persons.empty?
-    @persons.each do |person|
-      puts "[#{person.class.name}] Name: #{person.name}, Age: #{person.age}, id: #{person.id}"
-    end
+  def list_people
+    @people.each { |person| puts "[#{person.class}] Name: #{person.name}, Age: #{person.age}, id: #{person.id}" }
   end
 
   def create_person
@@ -40,39 +35,6 @@ class App
     end
   end
 
-  def create_student
-    puts 'Create a new student'
-    puts 'Enter student age: '
-    age = gets.chomp
-    puts 'Enter name: '
-    name = gets.chomp
-    puts 'Has parent permission? [Y/N]: '
-    parent_permission = gets.chomp.downcase
-    case parent_permission
-    when 'n'
-      student = Student.new(nil, age, name, parent_permission: false)
-      @persons << student
-      puts 'Need parent permission to Borrow a book'
-    when 'y'
-      student = Student.new(nil, age, name, parent_permission: true)
-      @persons << student
-      puts 'Student created successfully'
-    end
-  end
-
-  def create_teacher
-    puts 'Create a new teacher'
-    print 'Enter teacher age: '
-    age = gets.chomp
-    print 'Enter teacher name: '
-    name = gets.chomp
-    print 'Enter teacher specialization: '
-    specialization = gets.chomp
-    teacher = Teacher.new(specialization, age, name, parent_permission: true)
-    @persons << teacher
-    puts 'Teacher created successfully'
-  end
-
   def create_book
     puts 'Enter title:'
     title = gets.chomp
@@ -87,14 +49,14 @@ class App
   end
 
   def create_rental
-    return if @books.empty? || @persons.empty?
+    return if @books.empty? || @people.empty?
 
     puts 'Select a book from the following list of number'
     @books.each_with_index { |book, index| puts "#{index}) Title: #{book.title}, Author: #{book.author}" }
     book = gets.chomp.to_i
 
     puts 'Select a person from the following list of number (not ID)'
-    @persons.each_with_index do |person, index|
+    @people.each_with_index do |person, index|
       puts "#{index}) Name: #{person.name} Age: #{person.age} Id: #{person.id}"
     end
     person = gets.chomp.to_i
@@ -102,27 +64,18 @@ class App
     print 'Date: '
     date = gets.chomp
 
-    rental = Rental.new(date, @persons[person], @books[book])
+    rental = Rental.new(date, @people[person], @books[book])
     @rentals << rental
 
     puts 'Rental created successfully'
   end
 
-  def run
-    loop do
-      display_menu
-      option = gets.chomp.to_i
-      process_option(option)
-      break if option == 7
-    end
-  end
-
-  def display_menu
+  def options
     puts "Welcome to School Library App\n \n"
     puts 'Choose an option by entering a number:'
     puts '1. List all books'
     puts '2. List all people'
-    puts '3. Create a person'
+    puts '3. Create a person (student or teacher)'
     puts '4. Create a book'
     puts '5. Create a rental'
     puts '6. List rentals for a person'
@@ -131,12 +84,12 @@ class App
 
   def process_option(option)
     options = {
-      1 => method(:list_all_books),
-      2 => method(:list_all_people),
+      1 => method(:list_books),
+      2 => method(:list_people),
       3 => method(:create_person),
       4 => method(:create_book),
       5 => method(:create_rental),
-      6 => method(:list_rentals_for_person),
+      6 => method(:list_rental),
       7 => method(:say_goodbye)
     }
 
@@ -156,7 +109,7 @@ class App
     puts "Invalid option!\n \n"
   end
 
-  def list_rentals_for_person
+  def list_rental
     print 'Person ID: '
     id = gets.chomp.to_i
     @rentals.each do |rent|
