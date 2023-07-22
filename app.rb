@@ -10,30 +10,29 @@ class App
   attr_accessor :books, :people, :rentals
 
   def initialize
-    @books = []
-    @people = []
-    @rentals = []
-    load_data
+    @books = load_books_data
+    @people = load_people_data
+    @rentals = load_rentals_data
   end
 
   def save_books_data
-    file_data = @books.map { |book| { 'title' => book.title, 'author' => book.author } }
-    File.write('./data/books.json', JSON.generate(file_data))
+    save_data(@books, './data/books.json')
   end
 
   def save_people_data
-    file_data = @people.map do |person|
-      { 'name' => person.name, 'id' => person.id, 'age' => person.age, 'classification' => person.class.name }
-    end
-    File.write('./data/people.json', JSON.generate(file_data))
+    save_data(@people, './data/people.json')
   end
 
   def save_rentals_data
-    file_data = @rentals.map do |rental|
-      { 'date' => rental.date, 'book' => { 'title' => rental.book.title, 'author' => rental.book.author },
-        'person' => { 'name' => rental.person.name, 'id' => rental.person.id, 'age' => rental.person.age } }
-    end
-    File.write('./data/rentals.json', JSON.generate(file_data))
+    save_data(@rentals, './data/rentals.json')
+  end
+
+  def save_data(data, file_path)
+    return if data.empty?
+
+    # file_data = data.map(&:to_hash)
+    # File.write(file_path, JSON.generate(file_data))
+    File.write(file_path, JSON.generate(data.map(&:to_hash)))
   end
 
   def list_books
@@ -80,12 +79,6 @@ class App
     puts 'Rental created successfully'
   end
 
-  def load_data
-    load_books_data
-    load_people_data
-    load_rentals_data
-  end
-
   def load_books_data
     file_data = File.read('./data/books.json')
     @books = if file_data
@@ -95,12 +88,12 @@ class App
              else
                []
              end
+  rescue Errno::ENOENT, JSON::ParserError
+    @books = []
   end
 
   def load_people_data
     file_data = File.read('./data/people.json')
-    return unless file_data && !file_data.empty?
-
     @people = JSON.parse(file_data).map do |person_data|
       if person_data['classification'] == 'Student'
         Student.new(nil, person_data['age'], person_data['name'])
@@ -110,18 +103,27 @@ class App
         Person.new(person_data['age'], person_data['name'])
       end
     end
+  rescue Errno::ENOENT, JSON::ParserError
+    @people = []
   end
 
   def load_rentals_data
     file_data = File.read('./data/rentals.json')
     @rentals = if file_data
-                 JSON.parse(file_data).map do |rentals|
-                   Rental.new(rentals['date'], Book.new(rentals['book']['title'], rentals['book']['author']),
-                              Person.new(rentals['person']['age'], rentals['person']['name']))
+                 JSON.parse(file_data).map do |rental_data|
+                   book_data = rental_data['book']
+                   person_data = rental_data['person']
+
+                   book = Book.new(book_data['title'], book_data['author'])
+                   person = Person.new(person_data['age'], person_data['name'])
+
+                   Rental.new(rental_data['date'], book, person)
                  end
                else
                  []
                end
+  rescue Errno::ENOENT, JSON::ParserError
+    @rentals = []
   end
 
   def options
@@ -155,15 +157,12 @@ class App
     end
   end
 
-  def save
+  def say_goodbye
     save_books_data
     save_people_data
     save_rentals_data
-    exit
-  end
-
-  def say_goodbye
     puts "Goodbye!\n \n"
+    exit
   end
 
   def handle_invalid_option
