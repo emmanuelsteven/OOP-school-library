@@ -1,8 +1,7 @@
 require_relative 'nameable'
 
 class Person < Nameable
-  attr_accessor :name, :age, :rentals, :parent_permission
-  attr_reader :id
+  attr_accessor :name, :age, :rentals, :parent_permission, :id
 
   def initialize(age, name = 'unknown', parent_permission: true)
     super()
@@ -23,6 +22,15 @@ class Person < Nameable
 
   def add_rental(book, date)
     Rental.new(date, self, book)
+  end
+
+  def to_hash
+    {
+      'name' => @name,
+      'age' => @age,
+      'parent_permission' => @parent_permission,
+      'id' => @id
+    }
   end
 
   private

@@ -22,7 +22,7 @@ def create_student
   case parent_permission
   when 'n'
     student = Student.new(nil, age, name, parent_permission: false)
-    @persons << student
+    @people << student
     puts 'Need parent permission to Borrow a book'
   when 'y'
     student = Student.new(nil, age, name, parent_permission: true)
