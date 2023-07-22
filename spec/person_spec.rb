@@ -23,5 +23,18 @@ RSpec.describe Person do
     it 'should determine if the person can use services' do
       expect(person.can_use_services).to eq(true)
     end
+
+    it 'should convert person details to a hash' do
+      person = Person.new(55, 'Steve', parent_permission: true)
+
+      expected_hash = {
+        'name' => 'Steve',
+        'age' => 55,
+        'parent_permission' => true,
+        'id' => person.id
+      }
+
+      expect(person.to_hash).to eq(expected_hash)
+    end
   end
 end

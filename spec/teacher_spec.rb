@@ -19,5 +19,18 @@ RSpec.describe Teacher do
     it 'should return correct condition' do
       expect(teacher.can_use_services?).to be(true)
     end
+
+    it 'should convert teacher details to a hash' do
+      teacher = Teacher.new('Math', 24, 'Jasper', parent_permission: true)
+
+      expected_hash = {
+        'name' => 'Jasper',
+        'age' => 24,
+        'parent_permission' => true,
+        'specialization' => 'Math'
+      }
+
+      expect(teacher.to_hash).to eq(expected_hash)
+    end
   end
 end

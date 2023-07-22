@@ -24,5 +24,19 @@ RSpec.describe Student do
     it 'should return hooky symbol' do
       expect(student.play_hooky).to eq('¯\(ツ)/¯')
     end
+
+    it 'should convert student details to a hash' do
+      classrooms = ['Math', 'Science']
+      student = Student.new(classrooms, 18, 'John Doe', parent_permission: true)
+
+      expected_hash = {
+        'name' => 'John Doe',
+        'age' => 18,
+        'parent_permission' => true,
+        'classrooms' => classrooms
+      }
+
+      expect(student.to_hash).to eq(expected_hash)
+    end
   end
 end

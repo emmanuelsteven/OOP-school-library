@@ -24,5 +24,22 @@ describe Rental do
       expect(@book.rentals.length.positive?).to eq(true)
       expect(@person.rentals[0].person.name).to eq('Sam')
     end
+
+    it 'should convert rental details to a hash' do
+      expected_hash = {
+        'date' => '2023',
+        'book' => {
+          'title' => 'Legend',
+          'author' => 'John'
+        },
+        'person' => {
+          'name' => 'Sam',
+          'id' => @person.id,
+          'age' => 23
+        }
+      }
+
+      expect(@rental.to_hash).to eq(expected_hash)
+    end
   end
 end
