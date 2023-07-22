@@ -22,7 +22,7 @@ RSpec.describe Student do
     let(:student) { Student.new([], 24, 'jasper', parent_permission: true) }
 
     it 'should return hooky symbol' do
-      expect(student.play_hooky).to eq( '¯\(ツ)/¯')
+      expect(student.play_hooky).to eq('¯\(ツ)/¯')
     end
   end
 end
