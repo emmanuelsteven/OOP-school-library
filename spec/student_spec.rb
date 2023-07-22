@@ -26,7 +26,7 @@ RSpec.describe Student do
     end
 
     it 'should convert student details to a hash' do
-      classrooms = ['Math', 'Science']
+      classrooms = %w[Math Science]
       student = Student.new(classrooms, 18, 'John Doe', parent_permission: true)
 
       expected_hash = {
